@@ -1,0 +1,73 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <canvas id="cnv" width="800" height="600"></canvas>
+    <h2>Чат-комната</h2>
+
+    <div class="main">
+        <div id="loginBlock">
+            Введите логин:<br />
+            <input id="txtUserName" type="text" />
+            <input id="btnLogin" type="button" value="Войти" />
+        </div>
+        <div id="chatBody">
+            <div id="header"></div>
+            <div id="inputForm">
+                <input type="text" id="message" />
+                <input type="button" id="sendmessage" value="Отправить" />
+            </div>
+            <div id="chatroom"></div>
+
+            <div id="chatusers">
+                <p><b>Все пользователи</b></p>
+            </div>
+        </div>
+        <input id="hdId" type="hidden" />
+        <input id="username" type="hidden" />
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <!--Ссылка на библиотеку SignalR -->
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <!--Ссылка на автоматически сгенерированный скрипт хаба SignalR -->
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/util.js"></script>
+    <script>
+        $(function () {
+            var chat = $.connection.chatHub;
+            var plr = {
+                x: 1,
+                y: 1,
+                movx: +1,
+                movy: 0
+            }
+
+
+
+
+            var c = document.getElementById("cnv");
+            var ctx = c.getContext("2d");
+            function Draw() {
+                ctx .clearRect(0, 0, c.width, c.height);
+                ctx.fillRect(plr.x*30, plr.y*30,30, 30);
+            }
+            chat.client.update = function () {
+              
+                plr.x += plr.movx;
+                plr.y += plr.movy;
+                Draw();
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
