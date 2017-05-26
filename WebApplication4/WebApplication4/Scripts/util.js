@@ -28,6 +28,18 @@
         // $('#' + id).remove();
     }
 
+    game.client.onDirectionChanged = function (dir) {
+
+        // вызывается метод хаба чтобы оповестить об изминении движения игрока
+        game.server.changeDir(dir);
+    }
+
+    game.client.notifyDirectionChanged = function () {
+
+        // оповещает всех игроков, что другой игрок изменил движение
+
+    }
+
     // Открываем соединение
     $.connection.hub.start().done(function () {
 
