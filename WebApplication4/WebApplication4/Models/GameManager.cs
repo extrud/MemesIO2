@@ -29,12 +29,18 @@ namespace WebApplication4.Models
             {
                 Thread.Sleep(700);
                 Hub.AllUpdate();
+                Update();
             }
         }
 
         public void Update()
         {
+            foreach (var p in Players)
+            {
+                p.PositionX += p.MoveX;
+                p.PositionY += p.MoveY;
 
+            }
         }
 
         public void ControlInput(int id, int control)

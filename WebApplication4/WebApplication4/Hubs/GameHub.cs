@@ -52,13 +52,18 @@ namespace SignalRMvc.Hubs
                         ColorId = new Random().Next(11),
                         ConnectionId = id,
                         IsDead = false,
-                        Name = username
+                        Name = username,
+                        PositionX =0,
+                        PositionY =0,
+                        MoveX = 1,
+                        MoveY =0
                     };
+                    // Посылаем сообщение текущему пользователю
+                    Clients.Caller.onConnection(id, username, gm.Players);
                     gm.Players.Add(newPlayer);
                     //Players.Add(newPlayer);
 
-                    // Посылаем сообщение текущему пользователю
-                    Clients.Caller.onConnected(id, username, gm.Players);
+          
 
                     // Посылаем сообщение всем пользователям, кроме текущего
                     Clients.AllExcept(id).onNewPlayerConnected(id, newPlayer);
@@ -70,14 +75,14 @@ namespace SignalRMvc.Hubs
         {
             var id = Context.ConnectionId;
 
-            if (!gm.Players.Any(p => p.ConnectionId == id))
+            if (gm.Players.Any(p => p.ConnectionId == id))
             {
                 var player = gm.Players.FirstOrDefault(p => p.ConnectionId == id);
                 switch(dir)
                 {
                     case 1:
                         player.MoveX = 0;
-                        player.MoveY = 1;
+                        player.MoveY = -1;
                         break;
                     case 2:
                         player.MoveX = 1;
@@ -85,7 +90,7 @@ namespace SignalRMvc.Hubs
                         break;
                     case 3:
                         player.MoveX = 0;
-                        player.MoveY = -1;
+                        player.MoveY = 1;
                         break;
                     case 4:
                         player.MoveX = -1;

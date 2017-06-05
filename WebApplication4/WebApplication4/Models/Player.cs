@@ -12,13 +12,13 @@ namespace SignalRMvc.Models
         public string ConnectionId { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
-        [JsonProperty("positionX")]
+        [JsonProperty("Posx")]
         public int PositionX { get; set; }
-        [JsonProperty("positionY")]
+        [JsonProperty("Posy")]
         public int PositionY { get; set; }
-        [JsonProperty("moveX")]
+        [JsonProperty("movex")]
         public int MoveX { get; set; }
-        [JsonProperty("moveY")]
+        [JsonProperty("movey")]
         public int MoveY { get; set; }
         [JsonProperty("isDead")]
         public bool IsDead { get; set; }

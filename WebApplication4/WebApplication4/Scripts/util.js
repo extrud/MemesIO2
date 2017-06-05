@@ -6,11 +6,12 @@ function getChar(event) {
     return String.fromCharCode(event.keyCode || event.charCode);
 }
 $(function () {
+    var on = false;
     var chat = $.connection.gameHub;
-      
+    var game = chat;
     plr = {
-        x: 1,
-        y: 1,
+        x: 0,
+        y: 0,
         movx: +1,
         movy: 0
     }
@@ -20,6 +21,7 @@ $(function () {
 
     var c = document.getElementById("cnv");
     ctx = c.getContext("2d");
+    ctx.font = "15px Arial";
     $("body").keydown(function control(event) {
           
         var k = getChar(event);
@@ -27,60 +29,56 @@ $(function () {
         if (k == "W") {
             plr.movx = 0;
             plr.movy = -1;
-            chat.server.changeDir(0);
+            chat.server.changeDir(1);
         }
         if (k == "S") {
             plr.movx = 0;
             plr.movy = 1;
-            chat.server.changeDir(2);
+            chat.server.changeDir(3);
         }
         if (k == "A") {
             plr.movx =-1;
             plr.movy = 0;
-            chat.server.changeDir(3);
+            chat.server.changeDir(4);
         }
         if (k == "D") {
             plr.movx = 1;
             plr.movy = 0;
-            chat.server.changeDir(1);
+            chat.server.changeDir(2);
         }
     });
     function Draw() {
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.fillRect(plr.x * 30, plr.y * 30, 30, 30);
-        for (i = 0; i < OthPlrs; i++) {
-            ctx.fillRect(OthPlrs[i].x * 30, OthPlrs[i].y * 30, 30, 30);
+        ctx.fillText("You", plr.x * 30, plr.y * 30 -15);
+        if (OthPlrs !== undefined)
+        for (i = 0; i < OthPlrs.length; i++) {
+            ctx.fillRect(OthPlrs[i].Posx * 30, OthPlrs[i].Posy * 30, 30, 30);
+            ctx.fillText(OthPlrs[i].name, OthPlrs[i].Posx * 30, OthPlrs[i].Posy * 30 - 15);
         }
     }
-    chat.onConnected = function (id, userName, allUsers) {
 
-          
-        OthPlrs = allUsers;
-    }
      
     chat.client.update = function () {
-
+        if (!on)
+            return;
         plr.x += plr.movx;
         plr.y += plr.movy;
-        for (i = 0; i < OthPlrs; i++)
+        if(OthPlrs !==undefined)
+        for (i = 0; i < OthPlrs.length; i++)
         {
-            OthPlrs[i].x += OthPlrs[i].movx;
-            OthPlrs[i].y += OthPlrs[i].movy;
+            OthPlrs[i].Posx += OthPlrs[i].movex;
+            OthPlrs[i].Posy += OthPlrs[i].movey;
         }
         Draw();
 
     }
 
     // Ссылка на автоматически-сгенерированный прокси хаба
-    var game = $.connection.gameHub;
+
 
     // Функция, вызываемая при подключении нового пользователя
-    game.client.onConnected = function (id, userName, allUsers) {
 
-        // Start();
-        console.log("Connected.");
-        console.log(allUsers);
-    }
 
     game.client.onLoginFailed = function () {
 
@@ -91,6 +89,8 @@ $(function () {
     game.client.onNewPlayerConnected = function (id, newPlayer) {
 
         AddPlayer(id, newPlayer.name);
+        OthPlrs.push(newPlayer);
+     
     }
 
     // Удаляем пользователя
@@ -100,18 +100,49 @@ $(function () {
         // $('#' + id).remove();
     }
 
-    game.client.onDirectionChanged = function (dir) {
+    game.client.onDirectionChanged = function (dir,id) {
 
         // вызывается метод хаба чтобы оповестить об изминении движения игрока
-        game.server.changeDir(dir);
+        for (i = 0; i < OthPlrs.length; i++) {
+            if (OthPlrs[i].id == id)
+            {
+                switch (dir)
+                {
+                    case 1:
+                        OthPlrs[i].movex = 0;
+                        OthPlrs[i].movy = -1;
+                        break;
+                    case 2:
+                        OthPlrs[i].movex = 1;
+                        OthPlrs[i].movy = 0;
+                        break;
+                    case 3:
+
+                        OthPlrs[i].movex = 0;
+                        OthPlrs[i].movy = 1;
+                        break;
+                    case 4:
+
+                        OthPlrs[i].movex = -1;
+                        OthPlrs[i].movy = 0;
+                        break;
+                }
+            }
+
+           }
     }
 
-    game.client.notifyDirectionChanged = function () {
+    game.client.notifyDirectionChanged = function (plr) {
+        console.log(plr);
+        for (i = 0; i < OthPlrs.length; i++) {
+            if (OthPlrs[i].id == plr.id)
+            {
+                console.log("CHANGE");
+                OthPlrs[i] = plr;
+            }
 
-        // оповещает всех игроков, что другой игрок изменил движение
-
+        }
     }
-
     // Открываем соединение
     $.connection.hub.start().done(function () {
 
@@ -128,6 +159,13 @@ $(function () {
             }
         });
     });
+    game.client.onConnection = function (id, userName, allUsers) {
+
+    
+        OthPlrs = allUsers;
+        console.log(allUsers);
+        on = true;
+    }
 });
 // Кодирование тегов
 function htmlEncode(value) {
@@ -139,6 +177,7 @@ function AddPlayer(id, name) {
 
     var userId = $('#hdId').val();
 
+    
     if (userId != id) {
 
         console.log(name + " connected!");
