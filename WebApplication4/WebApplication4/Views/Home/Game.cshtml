@@ -7,7 +7,7 @@
     <title></title>
 </head>
 <body>
-    <canvas id="cnv" width="800" height="600"></canvas>
+    <canvas id="cnv" width="800" height="600" onkeydown="getChar"></canvas>
     <h2>Чат-комната</h2>
 
     <div class="main">
@@ -39,9 +39,24 @@
     <script src="~/signalr/hubs"></script>
     <script src="~/Scripts/util.js"></script>
     <script>
+        var plr;
+        function Start()
+        {
+        }
+        function getChar(event) {
+            return String.fromCharCode(event.keyCode || event.charCode);
+        }
+        function control(event) {
+            var k = getChar(event);
+            if (k == "w")
+            {
+                plr.movx = 0;
+                plr.movy = -1;
+            }
+        }
         $(function () {
             var chat = $.connection.chatHub;
-            var plr = {
+             plr = {
                 x: 1,
                 y: 1,
                 movx: +1,
@@ -53,6 +68,7 @@
 
             var c = document.getElementById("cnv");
             var ctx = c.getContext("2d");
+            ctx.onkeydown = control;
             function Draw() {
                 ctx .clearRect(0, 0, c.width, c.height);
                 ctx.fillRect(plr.x*30, plr.y*30,30, 30);

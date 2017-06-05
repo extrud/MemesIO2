@@ -14,18 +14,21 @@ namespace SignalRMvc.Hubs
         {
             while (true)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(700);
                 Clients.All.Update();
             }
         }
         static List<User> Users = new List<User>();
-        Thread LoopThread;
+        static Thread LoopThread;
+        static bool On = false;
         public ChatHub()
         {
-          
+            if (!On)
+            {
+                On = true;
                 LoopThread = new Thread(Loop);
                 LoopThread.Start();
-            
+            }
         }
         // Отправка сообщений
         public void Send(string name, string message)
