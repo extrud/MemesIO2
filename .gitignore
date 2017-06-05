@@ -45,3 +45,13 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+WebApplication4/.vs/config/applicationhost.config
+WebApplication4/.vs/SignalRMvc/v15/.suo
+WebApplication4/WebApplication4/bin/WebApplication4.dll
+WebApplication4/WebApplication4/bin/WebApplication4.pdb
+WebApplication4/WebApplication4/obj/Debug/CoreCompileInputs.cache
+*.cache
+WebApplication4/WebApplication4/obj/Debug/SignalRMvc.csproj.FileListAbsolute.txt
+WebApplication4/WebApplication4/obj/Debug/WebApplication4.dll
+WebApplication4/WebApplication4/obj/Debug/WebApplication4.pdb
+WebApplication4/WebApplication4/SignalRMvc.csproj
