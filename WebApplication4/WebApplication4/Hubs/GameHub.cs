@@ -11,24 +11,27 @@ namespace SignalRMvc.Hubs
 {
     public class GameHub : Hub
     {
-        GameManager gm = new GameManager();
-        Thread LoopThread;
+        static GameManager gm = new GameManager();
 
+        static bool GameOn =false;
         public GameHub()
         {
-
-            LoopThread = new Thread(Loop);
-            LoopThread.Start();
-
+           
+            if (!GameOn)
+            {
+                GameOn = true;
+                gm.Hub = this;
+                Thread t = new Thread(gm.MainLoop);
+                t.Start();
+            }
+           
         }
 
-        public void Loop()
+        public void AllUpdate()
         {
-            while (true)
-            {
-                Thread.Sleep(700);
+            
                 Clients.All.Update();
-            }
+            
         }
         
         public void Connect(string username, int skinId, int color)
