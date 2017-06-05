@@ -109,14 +109,12 @@ $(function () {
         // $('#' + id).remove();
     }
 
-    game.client.onDirectionChanged = function (dir,id) {
+    game.client.onDirectionChanged = function (dir, id) {
 
         // вызывается метод хаба чтобы оповестить об изминении движения игрока
         for (i = 0; i < OthPlrs.length; i++) {
-            if (OthPlrs[i].id == id)
-            {
-                switch (dir)
-                {
+            if (OthPlrs[i].id == id) {
+                switch (dir) {
                     case 1:
                         OthPlrs[i].movex = 0;
                         OthPlrs[i].movy = -1;
@@ -137,47 +135,50 @@ $(function () {
                         break;
                 }
             }
-
-
-
-    game.client.notifyDirectionChanged = function (plr) {
-        console.log(plr);
-        for (i = 0; i < OthPlrs.length; i++) {
-            if (OthPlrs[i].id == plr.id)
-            {
-                console.log("CHANGE");
-                OthPlrs[i] = plr;
-            }
-
-
-        console.log(player);
-        console.log("Direction changed");
-
+        }
     }
-    // Открываем соединение
-    $.connection.hub.start().done(function () {
 
-        // обработка логина
-        $("#btnLogin").click(function () {
 
-            console.log("'btnLogin' Click");
-            var name = $("#lgnUserName").val();
-            if (name.length > 0) {
-                game.server.connect(name, 0, 0);
+
+            game.client.notifyDirectionChanged = function (plr) {
+                console.log(plr);
+                for (i = 0; i < OthPlrs.length; i++) {
+                    if (OthPlrs[i].id == plr.id)
+                    {
+                        console.log("CHANGE");
+                        OthPlrs[i] = plr;
+                    }
+
+
+                    
+                    console.log("Direction changed");
+
+                }
             }
-            else {
-                alert("Введите имя.");
-            }
-        });
-    });
-    game.client.onConnection = function (id, userName, allUsers) {
+            // Открываем соединение
+            $.connection.hub.start().done(function () {
+
+                // обработка логина
+                $("#btnLogin").click(function () {
+
+                    console.log("'btnLogin' Click");
+                    var name = $("#lgnUserName").val();
+                    if (name.length > 0) {
+                        game.server.connect(name, 0, 0);
+                    }
+                    else {
+                        alert("Введите имя.");
+                    }
+                });
+            });
+            game.client.onConnection = function (id, userName, allUsers) {
 
     
-        OthPlrs = allUsers;
-        console.log(allUsers);
-        on = true;
-    }
-});
+                OthPlrs = allUsers;
+                console.log(allUsers);
+                on = true;
+            }
+        });
 // Кодирование тегов
 function htmlEncode(value) {
     var encodedValue = $('<div />').text(value).html();

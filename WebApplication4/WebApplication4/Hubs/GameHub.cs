@@ -58,7 +58,7 @@ namespace SignalRMvc.Hubs
                         PositionX =0,
                         PositionY =0,
                         MoveX = 1,
-                        MoveY =0
+                        MoveY =0,
 
                         Tail = new Tail()
 
