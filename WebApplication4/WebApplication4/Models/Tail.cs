@@ -1,4 +1,5 @@
-﻿using SignalRMvc.Models;
+﻿using Newtonsoft.Json;
+using SignalRMvc.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,12 +10,17 @@ namespace WebApplication4.Models
 {
     public class Tail
     {
+        [JsonProperty("points")]
         public List<Point> Points { get; set; }
-        public Player Player { get; set; }
 
-        public void MakePoint()
+        public Tail()
         {
-            Points.Add(new Point(Player.PositionX, Player.PositionY));
+            Points = new List<Point>();
+        }
+
+        public void MakePoint(Point point)
+        {
+            Points.Add(point);
         }
     }
 }

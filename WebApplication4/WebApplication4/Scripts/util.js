@@ -6,10 +6,13 @@ function getChar(event) {
     return String.fromCharCode(event.keyCode || event.charCode);
 }
 $(function () {
-    var chat = $.connection.gameHub;
+
+    // Ссылка на автоматически-сгенерированный прокси хаба
+    var game = $.connection.gameHub;
+    // var chat = $.connection.gameHub;
       
     plr = {
-        x: 1,
+        x: 1,   
         y: 1,
         movx: +1,
         movy: 0
@@ -27,22 +30,22 @@ $(function () {
         if (k == "W") {
             plr.movx = 0;
             plr.movy = -1;
-            chat.server.changeDir(0);
+            game.server.changeDir(0);
         }
         if (k == "S") {
             plr.movx = 0;
             plr.movy = 1;
-            chat.server.changeDir(2);
+            game.server.changeDir(2);
         }
         if (k == "A") {
             plr.movx =-1;
             plr.movy = 0;
-            chat.server.changeDir(3);
+            game.server.changeDir(3);
         }
         if (k == "D") {
             plr.movx = 1;
             plr.movy = 0;
-            chat.server.changeDir(1);
+            game.server.changeDir(1);
         }
     });
     function Draw() {
@@ -52,13 +55,13 @@ $(function () {
             ctx.fillRect(OthPlrs[i].x * 30, OthPlrs[i].y * 30, 30, 30);
         }
     }
-    chat.onConnected = function (id, userName, allUsers) {
+    game.onConnected = function (id, userName, allUsers) {
 
           
         OthPlrs = allUsers;
     }
      
-    chat.client.update = function () {
+    game.client.update = function () {
 
         plr.x += plr.movx;
         plr.y += plr.movy;
@@ -70,9 +73,6 @@ $(function () {
         Draw();
 
     }
-
-    // Ссылка на автоматически-сгенерированный прокси хаба
-    var game = $.connection.gameHub;
 
     // Функция, вызываемая при подключении нового пользователя
     game.client.onConnected = function (id, userName, allUsers) {
@@ -106,10 +106,12 @@ $(function () {
         game.server.changeDir(dir);
     }
 
-    game.client.notifyDirectionChanged = function () {
+    game.client.notifyDirectionChanged = function (player) {
 
         // оповещает всех игроков, что другой игрок изменил движение
 
+        console.log(player);
+        console.log("Direction changed");
     }
 
     // Открываем соединение

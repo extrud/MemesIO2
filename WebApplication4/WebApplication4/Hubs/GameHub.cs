@@ -6,6 +6,7 @@ using Microsoft.AspNet.SignalR;
 using SignalRMvc.Models;
 using WebApplication4.Models;
 using System.Threading;
+using System.Drawing;
 
 namespace SignalRMvc.Hubs
 {
@@ -52,7 +53,8 @@ namespace SignalRMvc.Hubs
                         ColorId = new Random().Next(11),
                         ConnectionId = id,
                         IsDead = false,
-                        Name = username
+                        Name = username,
+                        Tail = new Tail()
                     };
                     gm.Players.Add(newPlayer);
                     //Players.Add(newPlayer);
@@ -70,7 +72,7 @@ namespace SignalRMvc.Hubs
         {
             var id = Context.ConnectionId;
 
-            if (!gm.Players.Any(p => p.ConnectionId == id))
+            if (gm.Players.Any(p => p.ConnectionId == id))
             {
                 var player = gm.Players.FirstOrDefault(p => p.ConnectionId == id);
                 switch(dir)
@@ -78,21 +80,26 @@ namespace SignalRMvc.Hubs
                     case 1:
                         player.MoveX = 0;
                         player.MoveY = 1;
+                        player.Tail.MakePoint(new Point(player.PositionX, player.PositionY));
                         break;
                     case 2:
                         player.MoveX = 1;
                         player.MoveY = 0;
+                        player.Tail.MakePoint(new Point(player.PositionX, player.PositionY));
                         break;
                     case 3:
                         player.MoveX = 0;
                         player.MoveY = -1;
+                        player.Tail.MakePoint(new Point(player.PositionX, player.PositionY));
                         break;
                     case 4:
                         player.MoveX = -1;
                         player.MoveY = 0;
+                        player.Tail.MakePoint(new Point(player.PositionX, player.PositionY));
                         break;
                 }
 
+                Clients.Caller.notifyDirectionChanged(player);
                 Clients.AllExcept(id).notifyDirectionChanged(player);
             }
         }
