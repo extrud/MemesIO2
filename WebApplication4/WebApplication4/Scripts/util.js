@@ -76,7 +76,8 @@ $(function () {
 
     // Функция, вызываемая при подключении нового пользователя
     game.client.onConnected = function (id, userName, allUsers) {
-        
+
+        // Start();
         console.log("Connected.");
         console.log(allUsers);
     }

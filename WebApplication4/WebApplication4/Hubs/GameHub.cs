@@ -4,21 +4,40 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using SignalRMvc.Models;
-
+using WebApplication4.Models;
+using System.Threading;
 
 namespace SignalRMvc.Hubs
 {
     public class GameHub : Hub
     {
-        static List<Player> Players = new List<Player>();
+        GameManager gm = new GameManager();
+        Thread LoopThread;
 
+        public GameHub()
+        {
+
+            LoopThread = new Thread(Loop);
+            LoopThread.Start();
+
+        }
+
+        public void Loop()
+        {
+            while (true)
+            {
+                Thread.Sleep(700);
+                Clients.All.Update();
+            }
+        }
+        
         public void Connect(string username, int skinId, int color)
         {
             var id = Context.ConnectionId;
 
-            if (!Players.Any(p => p.ConnectionId == id))
+            if (!gm.Players.Any(p => p.ConnectionId == id))
             {
-                if (Players.Any(p => p.Name == username))
+                if (gm.Players.Any(p => p.Name == username))
                 {
                     // Such username exists
                     Clients.Caller.onLoginFailed();
@@ -32,10 +51,11 @@ namespace SignalRMvc.Hubs
                         IsDead = false,
                         Name = username
                     };
-                    Players.Add(newPlayer);
+                    gm.Players.Add(newPlayer);
+                    //Players.Add(newPlayer);
 
                     // Посылаем сообщение текущему пользователю
-                    Clients.Caller.onConnected(id, username, Players);
+                    Clients.Caller.onConnected(id, username, gm.Players);
 
                     // Посылаем сообщение всем пользователям, кроме текущего
                     Clients.AllExcept(id).onNewPlayerConnected(id, newPlayer);
@@ -47,9 +67,9 @@ namespace SignalRMvc.Hubs
         {
             var id = Context.ConnectionId;
 
-            if (!Players.Any(p => p.ConnectionId == id))
+            if (!gm.Players.Any(p => p.ConnectionId == id))
             {
-                var player = Players.FirstOrDefault(p => p.ConnectionId == id);
+                var player = gm.Players.FirstOrDefault(p => p.ConnectionId == id);
                 switch(dir)
                 {
                     case 1:
