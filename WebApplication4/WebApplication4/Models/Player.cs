@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebApplication4.Models;
 
 namespace SignalRMvc.Models
 {
@@ -24,6 +25,8 @@ namespace SignalRMvc.Models
         public bool IsDead { get; set; }
         [JsonProperty("colorId")]
         public int ColorId { get; set; }
+        [JsonProperty("tail")]
+        public Tail Tail { get; set; }
 
         public Player()
         {

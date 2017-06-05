@@ -6,6 +6,7 @@ function getChar(event) {
     return String.fromCharCode(event.keyCode || event.charCode);
 }
 $(function () {
+
     var on = false;
     var chat = $.connection.gameHub;
     var game = chat;
@@ -29,22 +30,30 @@ $(function () {
         if (k == "W") {
             plr.movx = 0;
             plr.movy = -1;
+
             chat.server.changeDir(1);
+
         }
         if (k == "S") {
             plr.movx = 0;
             plr.movy = 1;
+
             chat.server.changeDir(3);
+
         }
         if (k == "A") {
             plr.movx =-1;
             plr.movy = 0;
+
             chat.server.changeDir(4);
+
         }
         if (k == "D") {
             plr.movx = 1;
             plr.movy = 0;
+
             chat.server.changeDir(2);
+
         }
     });
     function Draw() {
@@ -58,7 +67,9 @@ $(function () {
         }
     }
 
+
      
+
     chat.client.update = function () {
         if (!on)
             return;
@@ -73,8 +84,6 @@ $(function () {
         Draw();
 
     }
-
-    // Ссылка на автоматически-сгенерированный прокси хаба
 
 
     // Функция, вызываемая при подключении нового пользователя
@@ -129,8 +138,7 @@ $(function () {
                 }
             }
 
-           }
-    }
+
 
     game.client.notifyDirectionChanged = function (plr) {
         console.log(plr);
@@ -141,7 +149,10 @@ $(function () {
                 OthPlrs[i] = plr;
             }
 
-        }
+
+        console.log(player);
+        console.log("Direction changed");
+
     }
     // Открываем соединение
     $.connection.hub.start().done(function () {
